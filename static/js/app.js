@@ -2,7 +2,7 @@
 
 var ddOptions=[]
 var samples = []
-d3.json("../data/samples.json").then(function(sampleData){
+d3.json("./data/samples.json").then(function(sampleData){
     console.log(sampleData);
     // var loopthrough = data.samples
     samples = sampleData
