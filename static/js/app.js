@@ -1,3 +1,5 @@
+
+
 var ddOptions=[]
 var samples = []
 d3.json("../data/samples.json").then(function(sampleData){
@@ -20,11 +22,14 @@ button.on("change",topTenBar)
 
 function topTenBar() {
     sample = d3.select("#selDataset").property("value");
-    console.log(sample)
+
     var values = []
     var labels = []
     var hover = []
     var index = ddOptions.indexOf(sample)
+    console.log(sample)
+    washFreq = samples.metadata[index].wfreq
+    
     console.log(index)
     console.log(samples.samples[index])
     var numSamples = samples.samples[index].otu_ids.length
@@ -53,14 +58,11 @@ function topTenBar() {
             values.push(samples.samples[index].sample_values[i])
         }
     }
-    console.log(`values ${values}`)
-    console.log(label)
-    console.log(`hover is cool:${hover}`)
-    console.log("Washing Freq")
+
     console.log(demoInfo[index].wfreq)
     var data = [{
         x: values,
-        y: label,
+        y: labels,
         type: 'bar',
         orientation: 'h',
         text: hover
@@ -72,10 +74,12 @@ function topTenBar() {
             autorange:'reversed'
         }
     }
-    Plotly.newPlot('bar',data,layout)
+    var config = {responsive: true}
+    Plotly.newPlot('bar',data,layout, config)
 
 
-    demos = d3.select("#sample-metadata")
+    demos = d3.select("#sample-metadata");
+    demos.html("");
     Object.entries(demoInfo[index]).forEach(function([key,value]){
         // change keys to uppercase
         demos.append("div").text(`${key.toUpperCase()}: ${value}`).style("text-align","left")
@@ -114,6 +118,26 @@ function topTenBar() {
         }
     Plotly.newPlot("bubble", bubbleData, bubbleLayout);
     
+    console.log(`washFreq: ${washFreq}`)
+    let gaugeData = [
+        {
+            domain: { x: [0, 1], y: [0, 1] },
+            value: washFreq,
+            title: { text: "Washing Frequency" },
+            type: "indicator",
+            mode: "gauge+number",
+            gauge: {
+                axis: {range: [null,9],tickwidth: 1, tickcolor: "blue"}
+            }
+        }
+    ];
+    
+    let gaugeLayout = {margin: { t: 0, b: 0 } };
+    
+    var gaugeConfig = {responsive: true}
+
+    Plotly.newPlot('gauge', gaugeData, gaugeLayout, gaugeConfig);
+    
 }
 // select an html element
 //create a change event
@@ -126,7 +150,7 @@ console.log(`samples : ${samples}`)
 // })
 // function grabstop10 (sampobj){
 //     //get index of selection and then grab info
-    
+    console.log()
     
 //     data.samples[index]
 //         //do stuff
